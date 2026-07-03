@@ -1,8 +1,10 @@
 package de.piggidragon.elementalrealms.packets;
 
 import de.piggidragon.elementalrealms.ElementalRealms;
+import de.piggidragon.elementalrealms.client.gui.screens.dialogue.DialogueClient;
 import de.piggidragon.elementalrealms.magic.affinities.Affinity;
 import de.piggidragon.elementalrealms.packets.custom.affinities.AffinitiesSuccessPacket;
+import de.piggidragon.elementalrealms.packets.custom.dialogue.OpenDialogPacket;
 import de.piggidragon.elementalrealms.packets.custom.magicbook.MagicBookOpenPacket;
 import de.piggidragon.elementalrealms.registries.attachments.ModAttachments;
 import de.piggidragon.elementalrealms.registries.guis.menus.custom.MagicBookMenu;
@@ -47,6 +49,11 @@ public final class ModPacketHandler {
                 AffinitiesSuccessPacket.STREAM_CODEC,
                 ModPacketHandler::handleAffinitySuccess
         );
+        registrar.playToClient(
+                OpenDialogPacket.TYPE,
+                OpenDialogPacket.STREAM_CODEC,
+                ModPacketHandler::handleOpenDialog
+        );
         registrar.playToServer(
                 MagicBookOpenPacket.TYPE,
                 MagicBookOpenPacket.STREAM_CODEC,
@@ -62,6 +69,13 @@ public final class ModPacketHandler {
 
             minecraft.gameRenderer.displayItemActivation(packet.itemStack());
             showClientParticles(minecraft.level, minecraft.player, packet.affinity());
+        });
+    }
+
+    private static void handleOpenDialog(OpenDialogPacket packet, IPayloadContext context) {
+        context.enqueueWork(() -> {
+            if (FMLEnvironment.dist != Dist.CLIENT) return;
+            DialogueClient.openDialog(packet);
         });
     }
 
@@ -110,7 +124,7 @@ public final class ModPacketHandler {
                         player.getX() + offsetX,
                         player.getY() + MAGIC_BOOK_PARTICLE_Y_OFFSET + offsetY,
                         player.getZ() + offsetZ,
-                        offsetX * 0.05, offsetY * 0.02, offsetZ * 0.05);
+                        offsetX * 0.02, offsetY * 0.02, offsetZ * 0.02);
             }
         }
     }
