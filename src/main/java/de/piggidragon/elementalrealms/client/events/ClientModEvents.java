@@ -5,6 +5,7 @@ import de.piggidragon.elementalrealms.ElementalRealms;
 import de.piggidragon.elementalrealms.client.rendering.tasks.RenderManager;
 import de.piggidragon.elementalrealms.registries.entities.ModEntities;
 import de.piggidragon.elementalrealms.registries.entities.client.renderer.misc.PortalEmptyRenderer;
+import de.piggidragon.elementalrealms.registries.entities.client.renderer.npc.TestDialogVillagerRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.neoforged.api.distmarker.Dist;
@@ -26,6 +27,7 @@ public final class ClientModEvents {
     @SubscribeEvent
     public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(ModEntities.PORTAL_ENTITY.get(), PortalEmptyRenderer::new);
+        event.registerEntityRenderer(ModEntities.TEST_DIALOG_VILLAGER.get(), TestDialogVillagerRenderer::new);
     }
 
     @SubscribeEvent

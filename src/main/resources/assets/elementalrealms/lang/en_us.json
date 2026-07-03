@@ -154,5 +154,12 @@
   "affinity.elementalrealms.space": "Space",
   "affinity.elementalrealms.life": "Life",
   "affinity.elementalrealms.void": "Void",
-  "magic_book.elementalrealms.title": "Magic Book"
+  "magic_book.elementalrealms.title": "Magic Book",
+
+  "npc.elementalrealms.test_dialog_villager": "Test Dialog NPC",
+  "dialog.elementalrealms.test_npc.title": "Test NPC",
+  "dialog.elementalrealms.test_npc.welcome.body": "Hallo Schueler! Dies ist ein Test-Dialog, um zu pruefen, ob das Centered-Overlay-System richtig funktioniert.",
+  "dialog.elementalrealms.test_npc.option.greet": "Gruessen",
+  "dialog.elementalrealms.test_npc.option.bye": "Tschüss",
+  "dialog.elementalrealms.test_npc.greet.body": "Schoen dich zu sehen! Bis zum naechsten Mal."
 }

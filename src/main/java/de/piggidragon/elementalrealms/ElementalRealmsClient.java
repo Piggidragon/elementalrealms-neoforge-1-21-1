@@ -1,5 +1,6 @@
 package de.piggidragon.elementalrealms;
 
+import de.piggidragon.elementalrealms.client.gui.screens.dialogue.DialogueInit;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -18,5 +19,8 @@ public final class ElementalRealmsClient {
     @SubscribeEvent
     static void onClientSetup(FMLClientSetupEvent event) {
         ElementalRealms.LOGGER.info("Client setup initialized");
+        // Wire the dialog registry now so /summon'd test NPCs can open dialogs
+        // the moment the player joins a world.
+        DialogueInit.registerDefaults();
     }
 }

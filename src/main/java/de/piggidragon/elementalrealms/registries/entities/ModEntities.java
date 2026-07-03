@@ -2,6 +2,7 @@ package de.piggidragon.elementalrealms.registries.entities;
 
 import de.piggidragon.elementalrealms.ElementalRealms;
 import de.piggidragon.elementalrealms.registries.entities.custom.misc.PortalEntity;
+import de.piggidragon.elementalrealms.registries.entities.custom.npc.TestDialogVillager;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -32,6 +33,17 @@ public final class ModEntities {
                     .clientTrackingRange(8)
                     .canSpawnFarFromPlayer()
                     .build("portal_entity")
+    );
+    /**
+     * Test-NPC for the dialog overlay (issue #57). Stationary villager with
+     * no AI; spawned on demand via vanilla {@code /summon}.
+     */
+    public static final Supplier<EntityType<TestDialogVillager>> TEST_DIALOG_VILLAGER = ENTITY_TYPES.register(
+            "test_dialog_villager",
+            () -> EntityType.Builder.of(TestDialogVillager::new, MobCategory.CREATURE)
+                    .sized(0.6f, 1.95f)
+                    .clientTrackingRange(10)
+                    .build("test_dialog_villager")
     );
 
     private ModEntities() {
