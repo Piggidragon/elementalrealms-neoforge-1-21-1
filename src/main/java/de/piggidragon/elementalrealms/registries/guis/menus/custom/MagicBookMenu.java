@@ -16,12 +16,12 @@ import java.util.List;
  * Display-only menu that shows the player's affinities and completion percentages.
  * Has a server constructor (data passed as a list) and a client constructor (data read from buffer).
  */
-public class AffinityBookMenu extends AbstractContainerMenu {
+public class MagicBookMenu extends AbstractContainerMenu {
 
     private final List<AffinityData> affinities;
 
-    public AffinityBookMenu(int containerId, FriendlyByteBuf extraData) {
-        super(ModMenus.AFFINITY_MENU.get(), containerId);
+    public MagicBookMenu(int containerId, FriendlyByteBuf extraData) {
+        super(ModMenus.MAGIC_BOOK_MENU.get(), containerId);
 
         int count = extraData.readInt();
         this.affinities = new ArrayList<>(count);
@@ -32,12 +32,12 @@ public class AffinityBookMenu extends AbstractContainerMenu {
         }
     }
 
-    public AffinityBookMenu(int containerId, List<AffinityData> affinities) {
-        super(ModMenus.AFFINITY_MENU.get(), containerId);
+    public MagicBookMenu(int containerId, List<AffinityData> affinities) {
+        super(ModMenus.MAGIC_BOOK_MENU.get(), containerId);
         this.affinities = new ArrayList<>(affinities);
     }
 
-    public AffinityBookMenu(int i, Inventory inventory, RegistryFriendlyByteBuf buf) {
+    public MagicBookMenu(int i, Inventory inventory, RegistryFriendlyByteBuf buf) {
         this(i, buf);
     }
 

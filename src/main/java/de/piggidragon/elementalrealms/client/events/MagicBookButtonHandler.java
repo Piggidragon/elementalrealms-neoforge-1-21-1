@@ -1,8 +1,8 @@
 package de.piggidragon.elementalrealms.client.events;
 
 import de.piggidragon.elementalrealms.ElementalRealms;
-import de.piggidragon.elementalrealms.client.gui.screens.affinitybook.AffinityBookButton;
-import de.piggidragon.elementalrealms.client.gui.screens.affinitybook.AffinityBookOverlay;
+import de.piggidragon.elementalrealms.client.gui.screens.magicbook.MagicBookButton;
+import de.piggidragon.elementalrealms.client.gui.screens.magicbook.MagicBookOverlay;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -24,20 +24,20 @@ import java.util.Map;
  * and renders the affinity book as an overlay that shifts the inventory to the right.
  */
 @EventBusSubscriber(modid = ElementalRealms.MODID, value = Dist.CLIENT)
-public final class AffinityBookButtonHandler {
+public final class MagicBookButtonHandler {
 
-    private static final Map<AbstractContainerScreen<?>, AffinityBookButton> affinityButtons = new HashMap<>();
-    private static final Map<AbstractContainerScreen<?>, AffinityBookOverlay> affinityOverlays = new HashMap<>();
+    private static final Map<AbstractContainerScreen<?>, MagicBookButton> affinityButtons = new HashMap<>();
+    private static final Map<AbstractContainerScreen<?>, MagicBookOverlay> affinityOverlays = new HashMap<>();
     private static final Map<AbstractContainerScreen<?>, ImageButton> recipeBookButtons = new HashMap<>();
     private static final int BUTTON_X_OFFSET = 104 + 24;
     private static final int RECIPE_BUTTON_X_OFFSET = 104;
     private static final int BUTTON_Y_OFFSET = 61;
-    private static final int AFFINITY_BOOK_SHIFT = 77;
+    private static final int MAGIC_BOOK_SHIFT = 77;
     private static final int INVENTORY_WIDTH = 176;
-    private static boolean shouldAffinityBookBeOpen = false;
+    private static boolean shouldMagicBookBeOpen = false;
     private static Field leftPosField = null;
 
-    private AffinityBookButtonHandler() {
+    private MagicBookButtonHandler() {
     }
 
     @SubscribeEvent
@@ -52,18 +52,18 @@ public final class AffinityBookButtonHandler {
 
         findAndStoreRecipeBookButton(containerScreen);
 
-        AffinityBookOverlay overlay = new AffinityBookOverlay(containerScreen.getMinecraft().player);
+        MagicBookOverlay overlay = new MagicBookOverlay(containerScreen.getMinecraft().player);
         affinityOverlays.put(containerScreen, overlay);
 
-        if (shouldAffinityBookBeOpen) {
+        if (shouldMagicBookBeOpen) {
             overlay.setVisible(true);
             if (recipeBook.isVisible()) {
                 recipeBook.toggleVisibility();
             }
-            shiftInventoryForAffinityBook(containerScreen, true);
+            shiftInventoryForMagicBook(containerScreen, true);
         }
 
-        AffinityBookButton affinityButton = createAffinityButton(containerScreen, recipeBook, overlay);
+        MagicBookButton affinityButton = createAffinityButton(containerScreen, recipeBook, overlay);
         affinityButtons.put(containerScreen, affinityButton);
         event.addListener(affinityButton);
     }
@@ -75,7 +75,7 @@ public final class AffinityBookButtonHandler {
         int leftPos = containerScreen.getGuiLeft();
         int topPos = containerScreen.getGuiTop();
 
-        AffinityBookButton affinityButton = affinityButtons.get(containerScreen);
+        MagicBookButton affinityButton = affinityButtons.get(containerScreen);
         if (affinityButton != null) {
             affinityButton.setPosition(leftPos + BUTTON_X_OFFSET, topPos + BUTTON_Y_OFFSET);
         }
@@ -86,11 +86,11 @@ public final class AffinityBookButtonHandler {
         }
 
         if (event.getScreen() instanceof InventoryScreen inventoryScreen) {
-            AffinityBookOverlay overlay = affinityOverlays.get(containerScreen);
+            MagicBookOverlay overlay = affinityOverlays.get(containerScreen);
             RecipeBookComponent recipeBook = inventoryScreen.getRecipeBookComponent();
             if (overlay != null && recipeBook != null && overlay.isVisible() && recipeBook.isVisible()) {
                 overlay.setVisible(false);
-                shouldAffinityBookBeOpen = false;
+                shouldMagicBookBeOpen = false;
             }
         }
     }
@@ -99,7 +99,7 @@ public final class AffinityBookButtonHandler {
     public static void onScreenRenderPost(ScreenEvent.Render.Post event) {
         if (!(event.getScreen() instanceof AbstractContainerScreen<?> containerScreen)) return;
 
-        AffinityBookOverlay overlay = affinityOverlays.get(containerScreen);
+        MagicBookOverlay overlay = affinityOverlays.get(containerScreen);
         if (overlay == null || !overlay.isVisible()) return;
 
         int overlayX = containerScreen.getGuiLeft() - overlay.getWidth();
@@ -132,20 +132,20 @@ public final class AffinityBookButtonHandler {
         }
     }
 
-    private static @NotNull AffinityBookButton createAffinityButton(
+    private static @NotNull MagicBookButton createAffinityButton(
             AbstractContainerScreen<?> containerScreen,
             RecipeBookComponent recipeBook,
-            AffinityBookOverlay overlay
+            MagicBookOverlay overlay
     ) {
         int buttonX = containerScreen.getGuiLeft() + BUTTON_X_OFFSET;
         int buttonY = containerScreen.getGuiTop() + BUTTON_Y_OFFSET;
-        return new AffinityBookButton(buttonX, buttonY, button -> {
+        return new MagicBookButton(buttonX, buttonY, button -> {
             overlay.toggleVisibility();
-            shouldAffinityBookBeOpen = overlay.isVisible();
+            shouldMagicBookBeOpen = overlay.isVisible();
             if (overlay.isVisible() && recipeBook.isVisible()) {
                 recipeBook.toggleVisibility();
             }
-            shiftInventoryForAffinityBook(containerScreen, overlay.isVisible());
+            shiftInventoryForMagicBook(containerScreen, overlay.isVisible());
         });
     }
 
@@ -153,7 +153,7 @@ public final class AffinityBookButtonHandler {
      * Reflectively shifts {@code AbstractContainerScreen.leftPos} so the inventory
      * panel centers next to the affinity book overlay when it's open.
      */
-    private static void shiftInventoryForAffinityBook(AbstractContainerScreen<?> containerScreen, boolean shift) {
+    private static void shiftInventoryForMagicBook(AbstractContainerScreen<?> containerScreen, boolean shift) {
         if (!(containerScreen instanceof EffectRenderingInventoryScreen<?>)) return;
 
         try {
@@ -163,7 +163,7 @@ public final class AffinityBookButtonHandler {
             }
 
             int originalLeftPos = (containerScreen.width - INVENTORY_WIDTH) / 2;
-            int newLeftPos = originalLeftPos + (shift ? AFFINITY_BOOK_SHIFT : 0);
+            int newLeftPos = originalLeftPos + (shift ? MAGIC_BOOK_SHIFT : 0);
             leftPosField.setInt(containerScreen, newLeftPos);
         } catch (NoSuchFieldException | IllegalAccessException e) {
             ElementalRealms.LOGGER.error("Failed to shift inventory for affinity book", e);

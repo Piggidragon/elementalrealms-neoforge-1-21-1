@@ -1,4 +1,4 @@
-package de.piggidragon.elementalrealms.client.gui.screens.affinitybook;
+package de.piggidragon.elementalrealms.client.gui.screens.magicbook;
 
 import de.piggidragon.elementalrealms.ElementalRealms;
 import de.piggidragon.elementalrealms.magic.affinities.Affinity;
@@ -16,10 +16,10 @@ import java.util.*;
 /**
  * Overlay panel rendered next to the inventory; lists the player's affinities and completion.
  */
-public class AffinityBookOverlay {
+public class MagicBookOverlay {
 
     private static final ResourceLocation BACKGROUND =
-            ResourceLocation.fromNamespaceAndPath(ElementalRealms.MODID, "textures/gui/affinity_book.png");
+            ResourceLocation.fromNamespaceAndPath(ElementalRealms.MODID, "textures/gui/magic_book.png");
 
     private static final int WIDTH = 147;
     private static final int HEIGHT = 166;
@@ -41,7 +41,7 @@ public class AffinityBookOverlay {
     private final Font font;
     private boolean visible = false;
 
-    public AffinityBookOverlay(Player player) {
+    public MagicBookOverlay(Player player) {
         this.player = player;
         this.minecraft = Minecraft.getInstance();
         this.font = this.minecraft.font;
@@ -72,7 +72,7 @@ public class AffinityBookOverlay {
 
         graphics.blit(BACKGROUND, x - 2, y, 1, 1, WIDTH, HEIGHT, 256, 256);
 
-        Component title = Component.translatable("affinity_book.elementalrealms.title");
+        Component title = Component.translatable("magic_book.elementalrealms.title");
         int titleX = x + (WIDTH - this.font.width(title)) / 2 - 2;
         graphics.drawString(this.font, title, titleX, y + TITLE_Y_OFFSET, TEXT_COLOR_WHITE, false);
 
