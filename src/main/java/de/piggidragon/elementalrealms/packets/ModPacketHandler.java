@@ -3,12 +3,11 @@ package de.piggidragon.elementalrealms.packets;
 import de.piggidragon.elementalrealms.ElementalRealms;
 import de.piggidragon.elementalrealms.magic.affinities.Affinity;
 import de.piggidragon.elementalrealms.packets.custom.affinities.AffinitiesSuccessPacket;
-import de.piggidragon.elementalrealms.packets.custom.affinities.AffinitiesOpenBookPacket;
+import de.piggidragon.elementalrealms.packets.custom.magicbook.MagicBookOpenPacket;
 import de.piggidragon.elementalrealms.registries.attachments.ModAttachments;
-import de.piggidragon.elementalrealms.registries.guis.menus.custom.AffinityBookMenu;
+import de.piggidragon.elementalrealms.registries.guis.menus.custom.MagicBookMenu;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.SimpleMenuProvider;
@@ -31,10 +30,10 @@ import java.util.Map;
 @EventBusSubscriber(modid = ElementalRealms.MODID)
 public final class ModPacketHandler {
 
-    private static final int AFFINITY_BOOK_PARTICLE_COUNT = 10;
-    private static final double AFFINITY_BOOK_PARTICLE_SPREAD = 1.0;
-    private static final double AFFINITY_BOOK_PARTICLE_Y_OFFSET = 0.8;
-    private static final double AFFINITY_BOOK_PARTICLE_Y_BONUS = 1.2;
+    private static final int MAGIC_BOOK_PARTICLE_COUNT = 10;
+    private static final double MAGIC_BOOK_PARTICLE_SPREAD = 1.0;
+    private static final double MAGIC_BOOK_PARTICLE_Y_OFFSET = 0.8;
+    private static final double MAGIC_BOOK_PARTICLE_Y_BONUS = 1.2;
 
     private ModPacketHandler() {
     }
@@ -49,9 +48,9 @@ public final class ModPacketHandler {
                 ModPacketHandler::handleAffinitySuccess
         );
         registrar.playToServer(
-                AffinitiesOpenBookPacket.TYPE,
-                AffinitiesOpenBookPacket.STREAM_CODEC,
-                ModPacketHandler::handleOpenAffinityBook
+                MagicBookOpenPacket.TYPE,
+                MagicBookOpenPacket.STREAM_CODEC,
+                ModPacketHandler::handleOpenMagicBook
         );
     }
 
@@ -66,23 +65,23 @@ public final class ModPacketHandler {
         });
     }
 
-    private static void handleOpenAffinityBook(AffinitiesOpenBookPacket packet, IPayloadContext context) {
+    private static void handleOpenMagicBook(MagicBookOpenPacket packet, IPayloadContext context) {
         context.enqueueWork(() -> {
             if (!(context.player() instanceof ServerPlayer serverPlayer)) return;
 
             Map<Affinity, Integer> completions = serverPlayer.getData(ModAttachments.AFFINITIES.get());
-            List<AffinityBookMenu.AffinityData> affinities = new ArrayList<>(completions.size());
+            List<MagicBookMenu.AffinityData> affinities = new ArrayList<>(completions.size());
             for (Map.Entry<Affinity, Integer> entry : completions.entrySet()) {
-                affinities.add(new AffinityBookMenu.AffinityData(entry.getKey(), entry.getValue()));
+                affinities.add(new MagicBookMenu.AffinityData(entry.getKey(), entry.getValue()));
             }
 
             serverPlayer.openMenu(new SimpleMenuProvider(
                     (containerId, playerInventory, player) ->
-                            new AffinityBookMenu(containerId, affinities),
-                    Component.translatable("gui.elementalrealms.affinity_book.title")
+                            new MagicBookMenu(containerId, affinities),
+                    Component.translatable("gui.elementalrealms.magic_book.title")
             ), buf -> {
                 buf.writeInt(affinities.size());
-                for (AffinityBookMenu.AffinityData data : affinities) {
+                for (MagicBookMenu.AffinityData data : affinities) {
                     buf.writeEnum(data.affinity());
                     buf.writeInt(data.completionPercent());
                 }
@@ -91,25 +90,25 @@ public final class ModPacketHandler {
     }
 
     private static void showClientParticles(Level level, Player player, Affinity affinity) {
-        for (int i = 0; i < AFFINITY_BOOK_PARTICLE_COUNT; i++) {
+        for (int i = 0; i < MAGIC_BOOK_PARTICLE_COUNT; i++) {
             double offsetX = level.random.nextDouble() - 0.5;
-            double offsetY = level.random.nextDouble() * AFFINITY_BOOK_PARTICLE_Y_BONUS;
+            double offsetY = level.random.nextDouble() * MAGIC_BOOK_PARTICLE_Y_BONUS;
             double offsetZ = level.random.nextDouble() - 0.5;
 
             switch (affinity) {
                 case FIRE -> level.addParticle(ParticleTypes.FLAME,
                         player.getX() + offsetX,
-                        player.getY() + AFFINITY_BOOK_PARTICLE_Y_OFFSET + offsetY,
+                        player.getY() + MAGIC_BOOK_PARTICLE_Y_OFFSET + offsetY,
                         player.getZ() + offsetZ,
                         0.0, 0.05, 0.0);
                 case ICE -> level.addParticle(ParticleTypes.SNOWFLAKE,
                         player.getX() + offsetX,
-                        player.getY() + AFFINITY_BOOK_PARTICLE_Y_OFFSET + offsetY,
+                        player.getY() + MAGIC_BOOK_PARTICLE_Y_OFFSET + offsetY,
                         player.getZ() + offsetZ,
                         offsetX * 0.02, -0.02, offsetZ * 0.02);
                 default -> level.addParticle(ParticleTypes.ENCHANT,
                         player.getX() + offsetX,
-                        player.getY() + AFFINITY_BOOK_PARTICLE_Y_OFFSET + offsetY,
+                        player.getY() + MAGIC_BOOK_PARTICLE_Y_OFFSET + offsetY,
                         player.getZ() + offsetZ,
                         offsetX * 0.05, offsetY * 0.02, offsetZ * 0.05);
             }
